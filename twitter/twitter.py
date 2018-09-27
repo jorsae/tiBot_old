@@ -152,8 +152,10 @@ class Twitter():
 
         r = self.api.request('media/upload', {'command':'FINALIZE', 'media_id':mediaId})
         if r.status_code >= 200 or r.status_code <= 299:
+            self.log.log(logger.LogLevel.INFO, 'Succesfully uploaded video: %s' % mediaId)
             return mediaId
         else:
+            self.log.log(logger.LogLevel.ERROR, 'Failed to upload image: %s' % img)
             return None
 
     def retweet(self, tweetId):
