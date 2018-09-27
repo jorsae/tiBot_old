@@ -119,7 +119,7 @@ class Twitter():
         """ Tweets text video(mp4). Returns tweetId, or False """
         uVid = self.upload_video(vid)
         if uVid is None:
-            print('uVid is None')
+            self.log.log(logger.LogLevel.ERROR, 'uVid is None. msg: %s, %s' % (msg, vid))
             return False
 
         r = self.api.request('statuses/update', {'status':msg, 'media_ids':uVid})
@@ -144,11 +144,11 @@ class Twitter():
             chunk = file.read(4*1024*1024)
             r = self.api.request('media/upload', {'command':'APPEND', 'media_id':mediaId, 'segment_index':segmentId}, {'media':chunk})
             if r.status_code < 200 or r.status_code > 299:
-                print('return false inside while')
+                self.log.log(logger.LogLevel.CRITICAL, 'Failed during upload: %s' % vid)
                 return None
             segmentId += 1
             bytesSent += file.tell()
-            print(bytesSent)
+            self.log.log(logger.LogLevel.DEBUG, 'Uploading: %s. BytesSent: %d' % (vid, bytesSent))
 
         r = self.api.request('media/upload', {'command':'FINALIZE', 'media_id':mediaId})
         if r.status_code >= 200 or r.status_code <= 299:
@@ -170,7 +170,6 @@ class Twitter():
         """ Follows a person, by user_id """
         r = self.api.request('friendships/create', {'user_id':followId})
         screenName = r.json()['screen_name']
-        print(screenName)
         if r.status_code == 200:
             self.log.log(logger.LogLevel.INFO, 'Followed: %s, (%s)' % (screenName, followId))
             return True
@@ -214,6 +213,7 @@ class Twitter():
                 return False
     
     def get_rates(self):
+        """ Only used for debugging, not relevant to log"""
         r = self.api.request('application/rate_limit_status')
         print(r.text)
         print(r.headers)
