@@ -108,9 +108,10 @@ class TweetThread():
             self.log.log(logger.LogLevel.ERROR, 'Failed to download image: %s | %s' % (url, e))
             return None 
 
-    def download_video(self, log, url):
+    def download_video(self, log, videoID):
         """ Downloads video (mp4) """
         fileName = '%s.mp4' % settings.TEMP_FILE
+        url = '%s%s' % (settings.IMGUR_VIDEO_BASEURL, videoID)
         try:
             with open(fileName, 'wb') as file:
                 response = requests.get(url)

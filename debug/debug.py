@@ -9,6 +9,7 @@ import settings
 import twitter.twitter as twitter
 import imgur.imgur as imgur
 import database.database as database
+import requests
 
 debugMode = True
 
@@ -37,6 +38,23 @@ def imgur_mode(log, imgr):
             debugImgur = False
         elif cmd == 'test tag':
             imgr.print_post('meme')
+        elif cmd == 'test post':
+            post = input('postID: ')
+            r = requests.get('https://api.imgur.com/3/image/%s' % post, headers=settings.IMGUR_HEADER)
+            print(r.text)
+        elif cmd =='download':
+            url = input('url: ')
+            fileName = "debug.mp4"
+            try:
+                with open(fileName, 'wb') as file:
+                    response = requests.get(url)
+                    file.write(response.content)
+                return fileName
+            except Exception as e:
+                if os.path.isfile(fileName):
+                    os.remove(fileName)
+                return None
+
 
 def twitter_mode(log, db, twit):
     debugTwitter = True
@@ -114,8 +132,8 @@ def database_mode(log, db):
             for person in personList:
                 print(person)
         elif cmd == 'query':
-            query = input('database : query $ ')
-            results = db.query_fetchall(query)
+            q = input('database : query $ ')
+            results = db.query_fetchall(q)
             for result in results:
                 print(result)
 

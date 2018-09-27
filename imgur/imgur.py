@@ -100,7 +100,7 @@ class Imgur():
             if media is None:
                 media = self.get_value(post, ('link', ))
         elif mediaType == MediaType.VIDEO:
-            media = self.get_value(post, ('images', 0, 'mp4', ))
+            media = self.get_value(post, ('images', 0, 'id', ))
             size = self.get_value(post, ('mp4_size', ))
             if size is None:
                 size = self.get_value(post, ('images', 0, 'mp4_size', ))
