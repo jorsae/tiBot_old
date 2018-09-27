@@ -85,7 +85,7 @@ IMGUR_HEADER = {'authorization': 'Client-Id <CLIENT_ID>'}
 IMGUR_AUTH_LINK = 'https://api.imgur.com/3/gallery/r/a'
 IMGUR_TAG_LINK = 'https://api.imgur.com/3/gallery/t/'
 IMGUR_POST_BASEURL = 'https://imgur.com/gallery/'
-IMGUR_VIDEO_BASEURL = 'https://imgur.com/download/'
+IMGUR_DOWNLOAD_BASEURL = 'https://imgur.com/download/'
 
 #Get's images from https://api.imgur.com/3/gallery/t/IMGUR_TAGS
 IMGUR_TAGS = ['example_tag']

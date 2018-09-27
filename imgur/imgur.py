@@ -93,7 +93,7 @@ class Imgur():
         
         # Get media url and size
         if mediaType == MediaType.IMAGE:
-            media = self.get_value(post, ('images', 0, 'link', ))
+            media = self.get_value(post, ('images', 0, 'id', ))
             size = self.get_value(post, ('size', ))
             if size is None:
                 size = self.get_value(post, ('images', 0, 'size', ))

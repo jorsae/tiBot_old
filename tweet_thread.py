@@ -93,9 +93,10 @@ class TweetThread():
             self.log.log(logger.LogLevel.WARNING, 'Added tweet to table \'%s\': %s' % (settings.TABLE_TWEETS, dbTweets))
             self.log.log(logger.LogLevel.WARNING, 'Added tweet to table \'%s\': %s' % (settings.TABLE_POSTS, dbPosts))
 
-    def download_image(self, log, url):
+    def download_image(self, log, imageID):
         """ Downloads image """
         fileName = '%s.jpg' % settings.TEMP_FILE
+        url = '%s%s' % (settings.IMGUR_DOWNLOAD_BASEURL, imageID)
         r = requests.get(url, stream=True)
         if r.status_code == 200:
             with open(fileName, 'wb') as image:
@@ -111,7 +112,7 @@ class TweetThread():
     def download_video(self, log, videoID):
         """ Downloads video (mp4) """
         fileName = '%s.mp4' % settings.TEMP_FILE
-        url = '%s%s' % (settings.IMGUR_VIDEO_BASEURL, videoID)
+        url = '%s%s' % (settings.IMGUR_DOWNLOAD_BASEURL, videoID)
         try:
             with open(fileName, 'wb') as file:
                 response = requests.get(url)
