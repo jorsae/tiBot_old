@@ -110,6 +110,11 @@ def database_mode(log, db):
             personList = db.query_fetchall(query.QUERY_GET_FOLLOWS_UPDATE_QUEUE(), (endDate, ))
             for person in personList:
                 print(person)
+        elif cmd == 'query':
+            query = input('database : query $ ')
+            results = db.query_fetchall(query)
+            for result in results:
+                print(result)
 
 def debug_commands():
     print('=====COMMAND LIST=====')
