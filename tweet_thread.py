@@ -38,6 +38,8 @@ class TweetThread():
                     else:
                         self.add_tweet_db(post, tweeted)
                         break
+                else:
+                    self.log.log(logger.LogLevel.DEBUG, 'Already tweeted(%s): %s' % (post.mediaType, post.postId))
             if tweeted is False:
                 self.log.log(logger.LogLevel.CRITICAL, 'Failed to tweet | len(postList): %d' % len(postList))
             
