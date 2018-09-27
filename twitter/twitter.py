@@ -136,7 +136,7 @@ class Twitter():
             self.log.log(logger.LogLevel.INFO, 'Tweeted(vid): %s | %s' % (msg, uVid))
             return r.json()['id']
         else:
-            self.log.log(logger.LogLevel.WARNING, 'Failed to tweet(vid): %s | %s' % (msg, uVid))
+            self.log.log(logger.LogLevel.WARNING, 'Failed to tweet(vid): %s | %s\nStatus code: %d: %s' % (msg, uVid, r.status_code, r.json()))
             return False
 
     def upload_video(self, vid):
