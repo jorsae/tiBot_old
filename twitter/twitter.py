@@ -161,7 +161,7 @@ class Twitter():
             self.log.log(logger.LogLevel.DEBUG, 'Uploading: %s | BytesSent: %d/%d' % (vid, bytesSent, totalBytes))
 
         r = self.api.request('media/upload', {'command':'FINALIZE', 'media_id':mediaId})
-        self.check_upload_video_status(r) is False:
+        if self.check_upload_video_status(r) is False:
             return None
         else:
             return mediaId
