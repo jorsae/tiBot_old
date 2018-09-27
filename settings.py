@@ -3,14 +3,6 @@ import logger
 import json
 import os
 
-"""
-    Can maybe remove:
-        overall -> RunBot
-        Twitter -> TempFile
-        Twitter -> FollowItems
-        imgur -> MaxImageSize
-        imgur -> MaxVideoSize
-"""
 class Settings():
     def __init__(self, settingsFile):
         self.settingsFile = settingsFile
