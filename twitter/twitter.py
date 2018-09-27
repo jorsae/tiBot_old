@@ -148,7 +148,7 @@ class Twitter():
                 return None
             segmentId += 1
             bytesSent += file.tell()
-            self.log.log(logger.LogLevel.DEBUG, 'Uploading: %s. BytesSent: %d' % (vid, bytesSent))
+            self.log.log(logger.LogLevel.DEBUG, 'Uploading: %s | BytesSent: %d' % (vid, bytesSent))
 
         r = self.api.request('media/upload', {'command':'FINALIZE', 'media_id':mediaId})
         if r.status_code >= 200 or r.status_code <= 299:
