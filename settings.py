@@ -66,6 +66,10 @@ class Settings():
             return False
         if type(self.unfollowPersonAfter) != datetime.timedelta:
             return False
+        if type(self.followTweetsMin) != int:
+            return False
+        if type(self.followTweetsMax) != int:
+            return False
         if type(self.followFriendsMin) != int:
             return False
         if type(self.followFriendsMax) != int:
@@ -78,9 +82,7 @@ class Settings():
             return False
         if type(self.followFavoritesMax) != int:
             return False
-        if type(self.followItemsMin) != int:
-            return False
-        if type(self.followItemsMax) != int:
+        if type(self.followItems) != int:
             return False
         return True
 
