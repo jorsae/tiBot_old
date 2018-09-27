@@ -141,10 +141,10 @@ class Twitter():
 
     def upload_video(self, vid):
         """ Uploads video(mp4) to Twitter's server. This is needed to be able to tweet that video """
-        totalBytes = os.path.getsize(vid)
         upload = self.api.request('media/upload', {'command':'INIT', 'media_type':'video/mp4', 'total_bytes':totalBytes})
         mediaId = upload.json()['media_id']
         f = open(vid, 'rb')
+        totalBytes = f.seek(0, os.SEEK_END)
 
         segmentId = 0
         bytesSent = 0
@@ -161,6 +161,7 @@ class Twitter():
         if self.check_upload_video_status(r, mediaId) is False:
             return None
         else:
+            self.log.log(logger.LogLevel.INFO, 'Uploaded image successfully: %s' % mediaId)
             return mediaId
 
     def check_upload_video_status(self, r, mediaId):
@@ -169,7 +170,6 @@ class Twitter():
             self.log.log(logger.LogLevel.ERROR, 'Failed to upload image: %s\n%d: %s' % (mediaId, r.status_code, r.text))
             return False
         else:
-            self.log.log(logger.LogLevel.INFO, 'Uploaded image successfully: %s' % mediaId)
             return True
 
     def retweet(self, tweetId):
