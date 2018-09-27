@@ -151,8 +151,11 @@ class Twitter():
         bytesSent = 0
         while bytesSent < totalBytes:
             chunk = file.read(4*1024*1024)
-            r = self.api.request('media/upload', {'command':'APPEND', 'media_id':mediaId, 'segment_index':segmentId}, {'media':chunk})
-            if self.check_upload_video_status(r, mediaId) is False:
+            try:
+                r = self.api.request('media/upload', {'command':'APPEND', 'media_id':mediaId, 'segment_index':segmentId}, {'media':chunk})
+                if self.check_upload_video_status(r, mediaId) is False:
+                    return None
+            except:
                 return None
             segmentId += 1
             bytesSent += file.tell()
