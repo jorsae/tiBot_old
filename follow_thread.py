@@ -72,7 +72,7 @@ def run(log, db, twit, imgr):
             if unfollowed:
                 dbResult = db.query_commit(query.QUERY_UPDATE_FOLLOWS(), (screenName, ))
                 if dbResult:
-                    log.log(logger.LogLevel.DEBUG, 'Updated database: %s are we not following anymore' % screenName)
+                    log.log(logger.LogLevel.DEBUG, 'Updated database: %s unfollowed successfully' % screenName)
                 else:
                     log.log(logger.LogLevel.WARNING, 'Unable to update followingNow status on person: %s' % screenName)
             else:
