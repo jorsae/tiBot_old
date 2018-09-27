@@ -29,8 +29,10 @@ class TweetThread():
             postList = self.imgr.get_posts()
             postList.sort(key=lambda x: x.views, reverse=True)
             for post in postList:
+                self.log.log(logger.LogLevel.DEBUG, 'Trying to tweet(%s): %s' % (post.mediaType, post.postId))
                 if self.tweeted_before(self.db, post) is False:
                     tweeted = self.tweet(post)
+                    self.log.log(logger.LogLevel.INFO, 'Tweeted: %s' % tweeted)
                     if tweeted is False:
                         continue
                     else:
