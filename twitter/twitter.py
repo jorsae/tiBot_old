@@ -141,21 +141,23 @@ class Twitter():
 
     def upload_video(self, vid):
         """ Uploads video(mp4) to Twitter's server. This is needed to be able to tweet that video """
-        f = open(vid, 'rb')
-        totalBytes = f.seek(0, os.SEEK_END)
-        
+        with open(vid, 'rb') as f:
+            totalBytes = f.seek(0, os.SEEK_END)
+
         upload = self.api.request('media/upload', {'command':'INIT', 'media_type':'video/mp4', 'total_bytes':totalBytes})
         mediaId = upload.json()['media_id']
+
+        file = open(vid, 'rb')
 
         segmentId = 0
         bytesSent = 0
         while bytesSent < totalBytes:
-            chunk = f.read(4*1024*1024)
+            chunk = file.read(4*1024*1024)
             r = self.api.request('media/upload', {'command':'APPEND', 'media_id':mediaId, 'segment_index':segmentId}, {'media':chunk})
             if self.check_upload_video_status(r, mediaId) is False:
                 return None
             segmentId += 1
-            bytesSent += f.tell()
+            bytesSent += file.tell()
             self.log.log(logger.LogLevel.DEBUG, 'Uploading: %s | BytesSent: %d/%d' % (vid, bytesSent, totalBytes))
 
         r = self.api.request('media/upload', {'command':'FINALIZE', 'media_id':mediaId})
