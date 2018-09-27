@@ -14,26 +14,26 @@ import database.database as database
 import debug.debug as debug
 import database.query as query
 
-def start(log, db, twit, imgr):
-    twitterThread = tweet_thread.TweetThread(log, db, twit, imgr)
+def start(log, setting, db, twit, imgr):
+    twitterThread = tweet_thread.TweetThread(log, setting, db, twit, imgr)
 
     tweetThread = threading.Thread(target=twitterThread.run)
     tweetThread.daemon = True
     tweetThread.start()
     
-    followThread = threading.Thread(target=follow_thread.run, args=(log, db, twit, imgr, ))
+    followThread = threading.Thread(target=follow_thread.run, args=(log, setting, db, twit, imgr, ))
     followThread.daemon = True
     followThread.start()
 
     log.log(logger.LogLevel.INFO, 'tiBot is running')
-    maintenance(log, db, twit, imgr, tweetThread, followThread)
+    maintenance(log, setting, db, twit, imgr, tweetThread, followThread)
 
-def maintenance(log, db, twit, imgr, tweetThread, followThread):
+def maintenance(log, setting, db, twit, imgr, tweetThread, followThread):
     timePast = 0
     lastUpdateDay = None
-    while settings.RunBot:
+    while setting.runBot:
         # Updates twitter statistics to database
-        if time.strftime("%H") == settings.TWITTER_UPDATE_STAT_HOUR:
+        if time.strftime("%H") == setting.updateStatHour:
             if lastUpdateDay is not datetime.datetime.now().day:
                 update_user_stats(log, db, twit)
                 lastUpdateDay = datetime.datetime.now().day
@@ -44,9 +44,9 @@ def maintenance(log, db, twit, imgr, tweetThread, followThread):
             if tweetThread.is_alive() is False or followThread.is_alive() is False:
                 log.log(logger.LogLevel.CRITICAL, 'tweetThread Status: %s | %s' % (tweetThread, tweetThread.isAlive()))
                 log.log(logger.LogLevel.CRITICAL, 'followThread Status: %s | %s' % (followThread, followThread.isAlive()))
-                settings.RunTweetThread = False
-                settings.RunFollowThread = False
-                settings.RunBot = False
+                setting.runTweetThread = False
+                setting.runFollowThread = False
+                setting.runBot = False
                 log.log(logger.LogLevel.CRITICAL, 'Getting ready to stop threads')
 
         #Every 6hours
@@ -61,9 +61,9 @@ def maintenance(log, db, twit, imgr, tweetThread, followThread):
         if tweetThread.is_alive() is False and followThread.is_alive() is False:
             shutdown = False
             log.log(logger.LogLevel.CRITICAL, 'Shutting down and restarting')
-            settings.RunTweetThread = True
-            settings.RunFollowThread = True
-            settings.RunBot = True
+            setting.runTweetThread = True
+            setting.runFollowThread = True
+            setting.runBot = True
             startup.startup()            
 
 

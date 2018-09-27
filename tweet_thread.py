@@ -11,15 +11,16 @@ import database.query as query
 import settings
 
 class TweetThread():
-    def __init__(self, log, db, twit, imgr):
+    def __init__(self, log, setting, db, twit, imgr):
         self.log = log
+        self.setting = setting
         self.db = db
         self.twit = twit
         self.imgr = imgr
 
     def run(self):
-        self.log.log(logger.LogLevel.INFO, 'tweet_thread.run() is now running: %s' % settings.RunTweetThread)
-        while settings.RunTweetThread:
+        self.log.log(logger.LogLevel.INFO, 'tweet_thread.run() is now running: %s' % self.setting.runTweetThread)
+        while self.setting.runTweetThread:
             secDelay = self.delay_tweet()
             self.log.log(logger.LogLevel.INFO, 'Tweeting in %d seconds' % secDelay)
             time.sleep(secDelay)
@@ -44,7 +45,7 @@ class TweetThread():
                 self.log.log(logger.LogLevel.CRITICAL, 'Failed to tweet | len(postList): %d' % len(postList))
             
             # Updates tweet's statistics
-            endDate = datetime.datetime.now() - settings.TWITTER_UPDATE_TWEET_AFTER
+            endDate = datetime.datetime.now() - self.setting.updateTweetAfter
             tweetUpdateList = self.db.query_fetchall(query.QUERY_GET_TWEET_UPDATE_QUEUE(), (endDate, ))
             for tweet in tweetUpdateList:
                 try:
@@ -83,22 +84,23 @@ class TweetThread():
             if media is None:
                 self.log.log(logger.LogLevel.INFO, 'post.mediaType: %s. Unable to download_video' % post.media.value)
                 return False
-            return self.twit.tweet_video('%s %s' % (post.title, settings.HASH_TAGS), media)
+            return self.twit.tweet_video('%s %s' % (post.title, self.setting.hashTags), media)
         return False
 
     def add_tweet_db(self, post, tweetId):
+        """ TODO: Deprecated function? """
         dbPosts = self.db.query_commit(query.QUERY_INSERT_POSTS(), self.imgr.post_to_tuple(tweetId, post))
         dbTweets = self.db.query_commit(query.QUERY_INSERT_TWEETS(), (tweetId, datetime.datetime.now()))
         if dbPosts and dbTweets:
             self.log.log(logger.LogLevel.INFO, 'Added tweet: %s to database' % post.postId)
         else:
-            self.log.log(logger.LogLevel.WARNING, 'Added tweet to table \'%s\': %s' % (settings.TABLE_TWEETS, dbTweets))
-            self.log.log(logger.LogLevel.WARNING, 'Added tweet to table \'%s\': %s' % (settings.TABLE_POSTS, dbPosts))
+            self.log.log(logger.LogLevel.WARNING, 'Added tweet to table \'%s\': %s' % (query.TABLE_TWEETS, dbTweets))
+            self.log.log(logger.LogLevel.WARNING, 'Added tweet to table \'%s\': %s' % (query.TABLE_POSTS, dbPosts))
 
     def download_image(self, log, imageID):
         """ Downloads image """
-        fileName = '%s.jpg' % settings.TEMP_FILE
-        url = '%s%s' % (settings.IMGUR_DOWNLOAD_BASEURL, imageID)
+        fileName = '%s.jpg' % self.setting.tempFile
+        url = '%s%s' % (self.setting.downloadBaseurl, imageID)
         r = requests.get(url, stream=True)
         if r.status_code == 200:
             with open(fileName, 'wb') as image:
@@ -113,8 +115,8 @@ class TweetThread():
 
     def download_video(self, log, videoID):
         """ Downloads video (mp4) """
-        fileName = '%s.mp4' % settings.TEMP_FILE
-        url = '%s%s' % (settings.IMGUR_DOWNLOAD_BASEURL, videoID)
+        fileName = '%s.mp4' % self.setting.tempFile
+        url = '%s%s' % (self.setting.downloadBaseurl, videoID)
         try:
             with open(fileName, 'wb') as file:
                 response = requests.get(url)
@@ -131,7 +133,7 @@ class TweetThread():
 
     def delay_update_tweet(self, tweetDate):
         """ Returns amount of seconds till tweet should be updated (24hours after tweetDate) """
-        time = datetime.datetime.strptime(tweetDate, '%Y-%m-%d %H:%M:%S.%f') + settings.TWITTER_UPDATE_TWEET_AFTER
+        time = datetime.datetime.strptime(tweetDate, '%Y-%m-%d %H:%M:%S.%f') + self.setting.updateTweetAfter
         return (time - datetime.datetime.now()).seconds
 
     def delay_tweet(self):

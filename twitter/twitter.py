@@ -7,18 +7,19 @@ import settings
 
 class Twitter():
     """ Twitter class """
-    def __init__(self, logger):
+    def __init__(self, logger, setting):
         self.authenticated = False
         self.api = None
         self.log = logger
+        self.setting = setting
     
     def authenticate(self):
         """ Authenticates user to Twitter API """
-        self.api = TwitterAPI(settings.CONSUMER_KEY, settings.CONSUMER_SECRET,
-                                settings.ACCESS_TOKEN, settings.ACCESS_SECRET)
+        self.api = TwitterAPI(self.setting.consumerKey, self.setting.consumerSecret,
+                                self.setting.accessToken, self.setting.accessSecret)
         r = self.api.request('account/verify_credentials')
         if r.status_code == 200:
-            if r.json()['screen_name'] == settings.TWITTER_NAME:
+            if r.json()['screen_name'] == self.setting.twitterName:
                 self.authenticated = True
                 self.log.log(logger.LogLevel.INFO, 'Twitter authenticated successfully')
             else:

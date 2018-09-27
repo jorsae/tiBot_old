@@ -38,16 +38,16 @@ class TwitterAccount():
     def to_string(self):
         return '%s: %d %d %d %d' % (self.screenName, self.followers, self.friends, self.favorites, self.tweets)
 
-def run(log, db, twit, imgr):
-    log.log(logger.LogLevel.INFO, 'follow_thread.run() is now running: %s' % settings.RunFollowThread)
-    while settings.RunFollowThread:
+def run(log, setting, db, twit, imgr):
+    log.log(logger.LogLevel.INFO, 'follow_thread.run() is now running: %s' % setting.runFollowThread)
+    while setting.runFollowThread:
         # Find a person
-        q = get_search_q()
+        q = get_search_q(setting)
         result = twit.search(q, 100)
         if result is None:
             log.log(logger.LogLevel.ERROR, 'follow_thread.run(): No result when searching \'%s\'' % q)
         personList = get_person_list(result)
-        person = get_person(db, personList)
+        person = get_person(db, personList, setting)
 
         # Follow person
         if person is None:
@@ -64,7 +64,7 @@ def run(log, db, twit, imgr):
                 log.log(logger.LogLevel.ERROR, 'Failed to follow: %s' % person.to_string())
         
         # Unfollow person
-        endDate = datetime.datetime.now() - settings.TWITTER_UPDATE_UNFOLLOW_AFTER
+        endDate = datetime.datetime.now() - setting.unfollowPersonAfter
         personList = db.query_fetchall(query.QUERY_GET_FOLLOWS_UPDATE_QUEUE(), (endDate, ))
         for person in personList:
             screenName = person[0]
@@ -78,8 +78,8 @@ def run(log, db, twit, imgr):
                 else:
                     log.log(logger.LogLevel.CRITICAL, 'Failed to unfollow a person that exists: %s' % screenName)
 
-        log.log(logger.LogLevel.INFO, 'follow_thread.run() sleeping for: %d' % settings.TWITTER_FOLLOW_PERSON_DELAY.total_seconds())
-        time.sleep(settings.TWITTER_FOLLOW_PERSON_DELAY.total_seconds())
+        log.log(logger.LogLevel.INFO, 'follow_thread.run() sleeping for: %d' % setting.followNewPerson.total_seconds())
+        time.sleep(setting.followNewPerson.total_seconds())
 
 def unfollow_in_db(log, db, screenName):
     dbResult = db.query_commit(query.QUERY_UPDATE_FOLLOWS(), (screenName, ))
@@ -88,25 +88,25 @@ def unfollow_in_db(log, db, screenName):
     else:
         log.log(logger.LogLevel.WARNING, 'Unable to update followingNow status on person: %s' % screenName)
 
-def get_person(db, personList):
+def get_person(db, personList, setting):
     for person in personList:
         if db.query_exists(query.QUERY_GET_FOLLOWS(), (person.screenName, )):
             continue
         
-        validStats = person_valid_stats(person)
+        validStats = person_valid_stats(person, setting)
         if validStats:
             return person
     return None
 
-def person_valid_stats(ta):
+def person_valid_stats(ta, setting):
     """ checks if the person fits statistics criteria """
-    if ta.tweets < settings.TWITTER_ADD_TWEETS_MIN or ta.tweets > settings.TWITTER_ADD_TWEETS_MAX:
+    if ta.tweets < setting.followTweetsMin or ta.tweets > setting.followTweetsMax:
         return False
-    if ta.friends < settings.TWITTER_ADD_FRIENDS_MIN or ta.friends > settings.TWITTER_ADD_FRIENDS_MAX:
+    if ta.friends < setting.followFriendsMin or ta.friends > setting.followFriendsMax:
         return False
-    if ta.followers < settings.TWITTER_ADD_FOLLOWERS_MIN or ta.followers > settings.TWITTER_ADD_FOLLOWERS_MAX:
+    if ta.followers < setting.followFollowersMin or ta.followers > setting.followFollowersMax:
         return False
-    if ta.favorites < settings.TWITTER_ADD_FAVORITES_MIN or ta.favorites > settings.TWITTER_ADD_FAVORITES_MAX:
+    if ta.favorites < setting.followFavoritesMin or ta.favorites > setting.followFavoritesMax:
         return False
     return True
 
@@ -122,6 +122,6 @@ def get_person_list(r):
         personList.append(a)
     return set(personList)
 
-def get_search_q():
-    hashTags = settings.HASH_TAGS.split(' ')
+def get_search_q(setting):
+    hashTags = setting.hashTags.split(' ')
     return hashTags[random.randint(0, len(hashTags) - 1)]

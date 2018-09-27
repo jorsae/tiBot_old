@@ -3,12 +3,11 @@ import sqlite3
 import sys
 sys.path.append("..")
 import logger
-import settings
 
 class Database():
     """ Database class """
-    def __init__(self, logger):
-        self.databaseFile = settings.DATABASE_FILE
+    def __init__(self, logger, databaseFile):
+        self.databaseFile = databaseFile
         self.connection = sqlite3.connect(self.databaseFile, check_same_thread=False)
         self.logger = logger
     

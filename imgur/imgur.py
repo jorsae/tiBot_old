@@ -27,13 +27,14 @@ class Post():
 
 class Imgur():
     """ Imgur class """
-    def __init__(self, logger):
+    def __init__(self, logger, setting):
         self.authenticated = False
         self.logger = logger
+        self.setting = setting
     
     def authenticate(self):
         """ Autenticate the user """
-        req = requests.get(settings.IMGUR_AUTH_LINK, headers=settings.IMGUR_HEADER)
+        req = requests.get(self.setting.authLink, headers=self.setting.imgurHeaders)
         try:
             if req.json()['status'] == 200:
                 self.logger.log(logger.LogLevel.INFO, 'Imgur authenticated successfully')
@@ -48,8 +49,8 @@ class Imgur():
     def get_posts(self):
         """ Get all possible posts to tweet """
         postList = []
-        for tag in settings.IMGUR_TAGS:
-            req = requests.get('%s%s' % (settings.IMGUR_TAG_LINK, tag), headers=settings.IMGUR_HEADER)
+        for tag in self.setting.imgurTags:
+            req = requests.get('%s%s' % (self.setting.tagLink, tag), headers=self.setting.imgurHeaders)
             for post in req.json()['data']['items']:
                 p = self.json_to_post(post, tag)
                 if p is not None:
@@ -109,10 +110,10 @@ class Imgur():
 
         #check if image/video is over max size
         if mediaType == MediaType.IMAGE:
-            if size >= settings.IMGUR_MAX_IMAGE_SIZE:
+            if size >= self.setting.maxImageSize:
                 return None
         elif mediaType == MediaType.VIDEO:
-            if size >= settings.IMGUR_MAX_VIDEO_SIZE:
+            if size >= self.setting.maxVideoSize:
                 return None
 
         postId = self.get_value(post, ("id", ))
@@ -127,6 +128,6 @@ class Imgur():
         return (tweetId, post.postId, post.title, post.mediaType, post.media, post.size, post.views, post.ups, post.downs, post.tag)
 
     def print_post(self, tag):
-        req = requests.get('%s%s' % (settings.IMGUR_TAG_LINK, tag), headers=settings.IMGUR_HEADER)
+        req = requests.get('%s%s' % (self.setting.tagLink, tag), headers=self.setting.imgurHeaders)
         for post in req.json()['data']['items']:
             print(post)

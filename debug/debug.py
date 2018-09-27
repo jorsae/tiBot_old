@@ -13,7 +13,7 @@ import requests
 
 debugMode = True
 
-def debug(log, db, twit, imgr):
+def debug(log, setting, db, twit, imgr):
     global debugMode
     print('Debug mode started')
     debug_commands()
@@ -21,15 +21,15 @@ def debug(log, db, twit, imgr):
         cmd = input('$ ')
         cmd = cmd.lower()
         if cmd == 'database':
-            database_mode(log, db)
+            database_mode(log, setting, db)
         elif cmd == 'twitter':
             twitter_mode(log, db, twit)
         elif cmd == 'imgur':
-            imgur_mode(log, imgr)
+            imgur_mode(log, setting, imgr)
         elif cmd == 'e' or cmd == 'q':
             debugMode = False
 
-def imgur_mode(log, imgr):
+def imgur_mode(log, setting, imgr):
     debugImgur = True
     while debugImgur:
         cmd = input('imgur $ ')
@@ -40,7 +40,7 @@ def imgur_mode(log, imgr):
             imgr.print_post('meme')
         elif cmd == 'test post':
             post = input('postID: ')
-            r = requests.get('https://api.imgur.com/3/image/%s' % post, headers=settings.IMGUR_HEADER)
+            r = requests.get('https://api.imgur.com/3/image/%s' % post, headers=setting.imgurHeaders)
             print(r.text)
         elif cmd =='download':
             url = input('url: ')
@@ -104,7 +104,7 @@ def twitter_mode(log, db, twit):
             print(retweets)
             
 
-def database_mode(log, db):
+def database_mode(log, setting, db):
     debugDatabase = True
     while debugDatabase:
         cmd = input('database $ ')
@@ -122,12 +122,12 @@ def database_mode(log, db):
         elif cmd == 'e':
             debugDatabase = False
         elif cmd == 'print tweets update':
-            endDate = datetime.datetime.now() - settings.TWITTER_UPDATE_TWEET_AFTER
+            endDate = datetime.datetime.now() - setting.updateTweetAfter
             tweetList = db.query_fetchall(query.QUERY_GET_TWEET_UPDATE_QUEUE(), (endDate, ))
             for tweet in tweetList:
                 print(tweet)
         elif cmd == 'print unfollow list':
-            endDate = datetime.datetime.now() - settings.TWITTER_UPDATE_UNFOLLOW_AFTER
+            endDate = datetime.datetime.now() - setting.unfollowPersonAfter
             personList = db.query_fetchall(query.QUERY_GET_FOLLOWS_UPDATE_QUEUE(), (endDate, ))
             for person in personList:
                 print(person)
