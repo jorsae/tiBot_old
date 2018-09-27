@@ -74,7 +74,7 @@ def run(log, db, twit, imgr):
             else:
                 res = twit.get_user_search(screenName)
                 if res is False:
-                    unfollow_in_db(screenName)
+                    unfollow_in_db(db, screenName)
                 else:
                     log.log(logger.LogLevel.CRITICAL, 'Failed to unfollow a person that exists: %s' % screenName)
 
