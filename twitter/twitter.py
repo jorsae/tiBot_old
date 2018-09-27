@@ -143,9 +143,6 @@ class Twitter():
         """ Uploads video(mp4) to Twitter's server. This is needed to be able to tweet that video """
         totalBytes = os.path.getsize(vid)
         upload = self.api.request('media/upload', {'command':'INIT', 'media_type':'video/mp4', 'total_bytes':totalBytes})
-        if self.check_upload_video_status(upload) is False:
-            return None        
-        
         mediaId = upload.json()['media_id']
         f = open(vid, 'rb')
 
@@ -154,22 +151,22 @@ class Twitter():
         while bytesSent < totalBytes:
             chunk = f.read(4*1024*1024)
             r = self.api.request('media/upload', {'command':'APPEND', 'media_id':mediaId, 'segment_index':segmentId}, {'media':chunk})
-            if self.check_upload_video_status(r) is False:
+            if self.check_upload_video_status(r, mediaId) is False:
                 return None
             segmentId += 1
             bytesSent += f.tell()
             self.log.log(logger.LogLevel.DEBUG, 'Uploading: %s | BytesSent: %d/%d' % (vid, bytesSent, totalBytes))
 
         r = self.api.request('media/upload', {'command':'FINALIZE', 'media_id':mediaId})
-        if self.check_upload_video_status(r) is False:
+        if self.check_upload_video_status(r, mediaId) is False:
             return None
         else:
             return mediaId
 
-    def check_upload_video_status(self, r):
+    def check_upload_video_status(self, r, mediaId):
         """ Checks the status of uploading a video """
         if r.status_code < 200 or r.status_code > 299:
-            self.log.log(logger.LogLevel.ERROR, 'Failed to upload image: %s\n%d: %s' % (img, r.status_code, r.text))
+            self.log.log(logger.LogLevel.ERROR, 'Failed to upload image: %s\n%d: %s' % (mediaId, r.status_code, r.text))
             return False
         else:
             self.log.log(logger.LogLevel.INFO, 'Uploaded image successfully: %s' % mediaId)
