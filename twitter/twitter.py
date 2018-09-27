@@ -143,29 +143,37 @@ class Twitter():
         """ Uploads video(mp4) to Twitter's server. This is needed to be able to tweet that video """
         totalBytes = os.path.getsize(vid)
         upload = self.api.request('media/upload', {'command':'INIT', 'media_type':'video/mp4', 'total_bytes':totalBytes})
+        if self.check_upload_video_status(r) is False:
+            return None        
         
         mediaId = upload.json()['media_id']
-        file = open(vid, 'rb')
+        f = open(vid, 'rb')
 
         segmentId = 0
         bytesSent = 0
         while bytesSent < totalBytes:
-            chunk = file.read(4*1024*1024)
+            chunk = f.read(4*1024*1024)
             r = self.api.request('media/upload', {'command':'APPEND', 'media_id':mediaId, 'segment_index':segmentId}, {'media':chunk})
-            if r.status_code < 200 or r.status_code > 299:
-                self.log.log(logger.LogLevel.CRITICAL, 'Failed during upload: %s' % vid)
+            if self.check_upload_video_status(r) is False:
                 return None
             segmentId += 1
-            bytesSent += file.tell()
-            self.log.log(logger.LogLevel.DEBUG, 'Uploading: %s | BytesSent: %d' % (vid, bytesSent))
+            bytesSent += f.tell()
+            self.log.log(logger.LogLevel.DEBUG, 'Uploading: %s | BytesSent: %d/%d' % (vid, bytesSent, totalBytes))
 
         r = self.api.request('media/upload', {'command':'FINALIZE', 'media_id':mediaId})
-        if r.status_code >= 200 or r.status_code <= 299:
-            self.log.log(logger.LogLevel.INFO, 'Succesfully uploaded video: %s' % mediaId)
-            return mediaId
-        else:
-            self.log.log(logger.LogLevel.ERROR, 'Failed to upload image: %s' % img)
+        self.check_upload_video_status(r) is False:
             return None
+        else:
+            return mediaId
+
+    def check_upload_video_status(self, r):
+        """ Checks the status of uploading a video """
+        if r.status_code < 200 or r.status_code > 299:
+            self.log.log(logger.LogLevel.ERROR, 'Failed to upload image: %s\n%d: %s' % (img, r.status_code, r.text))
+            return False
+        else:
+            self.log.log(logger.LogLevel.INFO, 'Uploaded image successfully: %s' % mediaId)
+            return True
 
     def retweet(self, tweetId):
         """ Retweets a tweet, by tweetId. Return boolean """
