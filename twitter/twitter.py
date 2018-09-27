@@ -26,6 +26,15 @@ class Twitter():
         else:
             self.log.log(logger.LogLevel.ERROR, 'Twitter failed to authenticate. Response: %s | %s' % (r.status_code, r.text))
     
+    def get_user_search(self, screen_name):
+        r = self.api.request('users/show', {'screen_name':screen_name})
+        if r.status_code == 200:
+            self.log.log(logger.LogLevel.DEBUG, 'Twitter user: %s exists' % screen_name)
+            return True
+        else:
+            self.log.log(logger.LogLevel.WARNING, 'Twitter user: %s does not exist' % screen_name)
+            return False
+
     def get_user_stats(self):
         """ returns followers, tweets, friends, favorites to the authenticated user """ 
         r = self.api.request('account/verify_credentials')
@@ -211,7 +220,7 @@ class Twitter():
                 self.log.log(logger.LogLevel.INFO, "Failed to unfollow: %s" % followId)
                 return False
         except Exception as e:
-                self.log.log(logger.LogLevel.WARNING, "Failed to unfollow, with a catch: %s" % e)
+                self.log.log(logger.LogLevel.WARNING, "Failed to unfollow, with exception: %s" % e)
                 return False
     
     def get_rates(self):

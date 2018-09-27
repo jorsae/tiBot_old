@@ -70,16 +70,23 @@ def run(log, db, twit, imgr):
             screenName = person[0]
             unfollowed = twit.unfollow_by_name(screenName)
             if unfollowed:
-                dbResult = db.query_commit(query.QUERY_UPDATE_FOLLOWS(), (screenName, ))
-                if dbResult:
-                    log.log(logger.LogLevel.DEBUG, 'Updated database: %s unfollowed successfully' % screenName)
-                else:
-                    log.log(logger.LogLevel.WARNING, 'Unable to update followingNow status on person: %s' % screenName)
+                unfollow_in_db(screenName)
             else:
-                log.log(logger.LogLevel.ERROR, 'Failed to unfollow: %s' % screenName)
+                res = twit.get_user_search(screenName)
+                if res is False:
+                    unfollow_in_db(screenName)
+                else:
+                    log.log(logger.LogLevel.CRITICAL, 'Failed to unfollow a person that exists: %s' % screenName)
 
         log.log(logger.LogLevel.INFO, 'follow_thread.run() sleeping for: %d' % settings.TWITTER_FOLLOW_PERSON_DELAY.total_seconds())
         time.sleep(settings.TWITTER_FOLLOW_PERSON_DELAY.total_seconds())
+
+def unfollow_in_db(screenName):
+    dbResult = db.query_commit(query.QUERY_UPDATE_FOLLOWS(), (screenName, ))
+    if dbResult:
+        log.log(logger.LogLevel.DEBUG, 'Updated database: %s unfollowed successfully' % screenName)
+    else:
+        log.log(logger.LogLevel.WARNING, 'Unable to update followingNow status on person: %s' % screenName)
 
 def get_person(db, personList):
     for person in personList:

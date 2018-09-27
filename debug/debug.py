@@ -65,6 +65,9 @@ def twitter_mode(log, db, twit):
             print('done')
         elif cmd == 'get rates':
             twit.get_rates()
+        elif cmd == 'check person':
+            person = input('person: ')
+            twit.get_user_search(person)
         elif cmd == 'delete last tweets':
             try:
                 num = int(input('amount: '))
