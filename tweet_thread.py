@@ -88,7 +88,6 @@ class TweetThread():
         return False
 
     def add_tweet_db(self, post, tweetId):
-        """ TODO: Deprecated function? """
         dbPosts = self.db.query_commit(query.QUERY_INSERT_POSTS(), self.imgr.post_to_tuple(tweetId, post))
         dbTweets = self.db.query_commit(query.QUERY_INSERT_TWEETS(), (tweetId, datetime.datetime.now()))
         if dbPosts and dbTweets:

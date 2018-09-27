@@ -8,7 +8,7 @@ def QUERY_UPDATE_FOLLOWS():
     return """ UPDATE %s SET followingNow = 0 WHERE screenName = ? """ % TABLE_FOLLOWS
 
 def QUERY_GET_FOLLOWS_UPDATE_QUEUE():
-    """ Query that returns everyone who you followed more than settings.TWITTER_UPDATE_UNFOLLOW_AFTER ago """
+    """ Query that returns everyone who you followed more than setting.unfollowPersonAfter ago """
     return """ SELECT * FROM %s where followDate <= ? AND followingNow = 1 """ % TABLE_FOLLOWS
 
 def QUERY_GET_FOLLOWS():
@@ -32,7 +32,7 @@ def QUERY_UPDATE_TWEET_DELETED():
     return """ UPDATE %s SET tweetExists = 0 WHERE tweetId = ? """ % TABLE_TWEETS
 
 def QUERY_GET_TWEET_UPDATE_QUEUE():
-    """ Query that returns tweets older than settings.TWITTER_UPDATE_TWEET_AFTER.
+    """ Query that returns tweets older than setting.updateTweetAfter.
         That has not yet been updated """
     return """ SELECT * FROM %s WHERE tweetDate <= ? AND updated = 0 AND tweetExists = 1 ORDER BY tweetDate ASC""" % TABLE_TWEETS
 
