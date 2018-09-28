@@ -165,13 +165,13 @@ class Twitter():
         if self.check_upload_video_status(r, mediaId) is False:
             return None
         else:
-            self.log.log(logger.LogLevel.INFO, 'Uploaded image successfully: %s' % mediaId)
+            self.log.log(logger.LogLevel.INFO, 'Uploaded video successfully: %s' % mediaId)
             return mediaId
 
     def check_upload_video_status(self, r, mediaId):
         """ Checks the status of uploading a video """
         if r.status_code < 200 or r.status_code > 299:
-            self.log.log(logger.LogLevel.ERROR, 'Failed to upload image: %s\n%d: %s' % (mediaId, r.status_code, r.text))
+            self.log.log(logger.LogLevel.ERROR, 'Failed to upload video: %s\n%d: %s' % (mediaId, r.status_code, r.text))
             return False
         else:
             return True
