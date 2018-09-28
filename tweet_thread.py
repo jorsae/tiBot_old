@@ -33,7 +33,7 @@ class TweetThread():
                 self.log.log(logger.LogLevel.DEBUG, 'Trying to tweet(%s): %s' % (post.mediaType, post.postId))
                 if self.tweeted_before(self.db, post) is False:
                     tweeted = self.tweet(post)
-                    self.log.log(logger.LogLevel.INFO, 'Tweeted: %s' % tweeted)
+                    self.log.log(logger.LogLevel.DEBUG, 'Tweeted: %s' % tweeted)
                     if tweeted is False:
                         continue
                     else:

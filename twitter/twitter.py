@@ -96,7 +96,7 @@ class Twitter():
             self.log.log(logger.LogLevel.INFO, 'Tweeted(text): %s' % msg)
             return True
         else:
-            self.log.log(logger.LogLevel.WARNING, 'Failed to tweet(text): %s' % msg)
+            self.log.log(logger.LogLevel.ERROR, 'Failed to tweet(text): %s' % msg)
             return False
     
     def tweet_image(self, msg, img):
@@ -110,7 +110,7 @@ class Twitter():
             self.log.log(logger.LogLevel.INFO, 'Tweeted(img): %s | %s' % (msg, img))
             return r.json()['id']
         else:
-            self.log.log(logger.LogLevel.WARNING, 'Failed to tweet(img): %s, %s | %s' % (msg, img, r.text))
+            self.log.log(logger.LogLevel.ERROR, 'Failed to tweet(img): %s, %s | %s' % (msg, img, r.text))
             return False
 
     def upload_image(self, img):
@@ -137,7 +137,7 @@ class Twitter():
             self.log.log(logger.LogLevel.INFO, 'Tweeted(vid): %s | %s' % (msg, uVid))
             return r.json()['id']
         else:
-            self.log.log(logger.LogLevel.WARNING, 'Failed to tweet(vid): %s | %s\nStatus code: %d: %s' % (msg, uVid, r.status_code, r.json()))
+            self.log.log(logger.LogLevel.ERROR, 'Failed to tweet(vid): %s | %s\nStatus code: %d: %s' % (msg, uVid, r.status_code, r.json()))
             return False
 
     def upload_video(self, vid):
@@ -159,7 +159,7 @@ class Twitter():
                 return None
             segmentId += 1
             bytesSent += file.tell()
-            self.log.log(logger.LogLevel.DEBUG, 'Uploading: %s | BytesSent: %d/%d' % (vid, bytesSent, totalBytes))
+            self.log.log(logger.LogLevel.DEBUG, 'Uploading(%d): %s as %s | BytesSent: %d/%d' % (segmentId, mediaId, vid, bytesSent, totalBytes))
 
         r = self.api.request('media/upload', {'command':'FINALIZE', 'media_id':mediaId})
         if self.check_upload_video_status(r, mediaId) is False:

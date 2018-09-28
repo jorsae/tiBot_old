@@ -5,52 +5,52 @@ TABLE_FOLLOWS = 'follows'
 
 def QUERY_UPDATE_FOLLOWS():
     """ Query that updates favorites/retweets on a tweet, based on tweetId """
-    return """ UPDATE %s SET followingNow = 0 WHERE screenName = ? """ % TABLE_FOLLOWS
+    return """UPDATE %s SET followingNow = 0 WHERE screenName = ? """ % TABLE_FOLLOWS
 
 def QUERY_GET_FOLLOWS_UPDATE_QUEUE():
     """ Query that returns everyone who you followed more than setting.unfollowPersonAfter ago """
-    return """ SELECT * FROM %s where followDate <= ? AND followingNow = 1 """ % TABLE_FOLLOWS
+    return """SELECT * FROM %s where followDate <= ? AND followingNow = 1 """ % TABLE_FOLLOWS
 
 def QUERY_GET_FOLLOWS():
     """ Query that selects * from TABLE_FOLLOWS, based on screenName """
-    return """ SELECT *  FROM %s WHERE screenName = ? """ % TABLE_FOLLOWS
+    return """SELECT *  FROM %s WHERE screenName = ? """ % TABLE_FOLLOWS
 
 def QUERY_INSERT_FOLLOWS():
     """ Query that inserts a user, I've followed to TABLE_FOLLOWS """
-    return """ INSERT INTO %s VALUES (?, ?, ?) """ % TABLE_FOLLOWS
+    return """INSERT INTO %s VALUES (?, ?, ?) """ % TABLE_FOLLOWS
 
 def QUERY_INSERT_STATS():
     """ Query that inserts user stats to TABLE_STATS """
-    return """ INSERT INTO %s VALUES(?, ?, ?, ?, ?)""" % TABLE_STATS
+    return """INSERT INTO %s VALUES(?, ?, ?, ?, ?)""" % TABLE_STATS
 
 def QUERY_ALREADY_TWEETED():
     """ Query that checks if a post has already been tweeted """
-    return """ SELECT * FROM %s WHERE postId = ? OR media = ? """ % TABLE_POSTS
+    return """SELECT * FROM %s WHERE postId = ? OR media = ? """ % TABLE_POSTS
 
 def QUERY_UPDATE_TWEET_DELETED():
     """ Query that updates a tweet, that has been deleted """
-    return """ UPDATE %s SET tweetExists = 0 WHERE tweetId = ? """ % TABLE_TWEETS
+    return """UPDATE %s SET tweetExists = 0 WHERE tweetId = ? """ % TABLE_TWEETS
 
 def QUERY_GET_TWEET_UPDATE_QUEUE():
     """ Query that returns tweets older than setting.updateTweetAfter.
         That has not yet been updated """
-    return """ SELECT * FROM %s WHERE tweetDate <= ? AND updated = 0 AND tweetExists = 1 ORDER BY tweetDate ASC""" % TABLE_TWEETS
+    return """SELECT * FROM %s WHERE tweetDate <= ? AND updated = 0 AND tweetExists = 1 ORDER BY tweetDate ASC""" % TABLE_TWEETS
 
 def QUERY_UPDATE_POSTS():
     """ Query that updates favorites/retweets on a tweet, based on tweetId """
-    return """ UPDATE %s SET favorites = ?, retweets = ?, updated = 1 WHERE tweetId = ? """ % TABLE_TWEETS
+    return """UPDATE %s SET favorites = ?, retweets = ?, updated = 1 WHERE tweetId = ? """ % TABLE_TWEETS
 
 def QUERY_GET_POSTS():
     """ Query that selects * from TABLE_POSTS, based on tweetId """
-    return """ SELECT * FROM %s WHERE tweetId = ? """ % TABLE_TWEETS
+    return """SELECT * FROM %s WHERE tweetId = ? """ % TABLE_TWEETS
 
 def QUERY_INSERT_TWEETS():
     """ Query that inserts a tweet, into table: TABLE_TWEETS """
-    return """ INSERT INTO %s VALUES(?, ?, 0, 0, 0, 1)""" % TABLE_TWEETS
+    return """INSERT INTO %s VALUES(?, ?, 0, 0, 0, 1)""" % TABLE_TWEETS
 
 def QUERY_INSERT_POSTS():
     """ Query that inserts a Imgur.Post, into table: TABLE_POSTS """
-    return """ INSERT INTO %s VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""" % TABLE_POSTS
+    return """INSERT INTO %s VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""" % TABLE_POSTS
 
 def QUERY_TABLE_EXISTS():
     """ Query that checks if a table exists in the database """
