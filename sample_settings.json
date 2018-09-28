@@ -8,12 +8,12 @@
     "logger":{
         "logFileName":"tiBot",
         "lOGGER_PRINT_LEVEL":"info",
-        "logFolder":"logFolder",
+        "logFolder":"logs",
         "logSize":3000
     },
     "twitter":{
         "consumerKey":"<CONSUMER_KEY>",
-        "consumerSecret":"CONSUMER_SECRET",
+        "consumerSecret":"<CONSUMER_SECRET>",
         "accessToken":"<ACCESS_TOKEN>",
         "accessSecret":"<ACCESS_SECRET>",
         "twitterName":"<TWITTER_NAME>",
@@ -30,7 +30,7 @@
         "unfollowPersonAfter":[99, 0]
     },
     "imgur":{
-        "clientId":"<CLIENT_ID",
+        "clientId":"<CLIENT_ID>",
         "authLink":"https://api.imgur.com/3/gallery/r/a",
         "tagLink":"https://api.imgur.com/3/gallery/t/",
         "postBaseurl":"https://imgur.com/gallery/",
