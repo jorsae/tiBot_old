@@ -143,8 +143,12 @@ class Twitter():
     def upload_video(self, vid):
         """ Uploads video(mp4) to Twitter's server. This is needed to be able to tweet that video """
         totalBytes = os.path.getsize(vid)
-        upload = self.api.request('media/upload', {'command':'INIT', 'media_type':'video/mp4', 'total_bytes':totalBytes})
-        mediaId = upload.json()['media_id']
+        try:
+            upload = self.api.request('media/upload', {'command':'INIT', 'media_type':'video/mp4', 'total_bytes':totalBytes})
+            mediaId = upload.json()['media_id']
+        except Exception as e:
+            self.log.log(logger.LogLevel.CRITICAL, 'Uploading INIT: %s' % e)
+            return None
 
         file = open(vid, 'rb')
         segmentId = 0
@@ -155,13 +159,18 @@ class Twitter():
                 r = self.api.request('media/upload', {'command':'APPEND', 'media_id':mediaId, 'segment_index':segmentId}, {'media':chunk})
                 if self.check_upload_video_status(r, mediaId) is False:
                     return None
-            except:
+            except Exception as e:
+                self.log.log(logger.LogLevel.CRITICAL, 'Uploading APPEND(%d): %s as %s | BytesSent: %d/%d\nException: %s' % (segmentId, mediaId, vid, bytesSent, totalBytes, e))
                 return None
             segmentId += 1
             bytesSent += file.tell()
             self.log.log(logger.LogLevel.DEBUG, 'Uploading(%d): %s as %s | BytesSent: %d/%d' % (segmentId, mediaId, vid, bytesSent, totalBytes))
+        try:
+            r = self.api.request('media/upload', {'command':'FINALIZE', 'media_id':mediaId})
+        except Exception as e:
+            self.log.log(logger.LogLevel.CRITICAL, 'Uploading FINALIZE: %s as %s\nException %s' % (mediaId, vid, e))
+            return None
 
-        r = self.api.request('media/upload', {'command':'FINALIZE', 'media_id':mediaId})
         if self.check_upload_video_status(r, mediaId) is False:
             return None
         else:
