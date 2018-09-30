@@ -138,9 +138,14 @@ def database_mode(log, setting, db):
                 if q == 'e':
                     queryMode = False
                     break
-                results = db.query_fetchall(q)
-                for result in results:
-                    print(result)
+                elif q == 'commit':
+                    query = input('database : query-commit $ ')
+                    res = db.query_commit(query)
+                    print(res)
+                else:
+                    results = db.query_fetchall(q)
+                    for result in results:
+                        print(result)
                 
 
 def debug_commands():

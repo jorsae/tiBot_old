@@ -33,8 +33,8 @@ def QUERY_UPDATE_TWEET_DELETED():
 
 def QUERY_GET_TWEET_UPDATE_QUEUE():
     """ Query that returns tweets older than setting.updateTweetAfter.
-        That has not yet been updated """
-    return """SELECT * FROM %s WHERE tweetDate <= ? AND updated = 0 AND tweetExists = 1 ORDER BY tweetDate ASC""" % TABLE_TWEETS
+        That has not yet been updated. Limit 100, because we don't want to overreach twitter's rate limit """
+    return """SELECT * FROM %s WHERE tweetDate <= ? AND updated = 0 AND tweetExists = 1 ORDER BY tweetDate ASC LIMIT 100""" % TABLE_TWEETS
 
 def QUERY_UPDATE_POSTS():
     """ Query that updates favorites/retweets on a tweet, based on tweetId """
