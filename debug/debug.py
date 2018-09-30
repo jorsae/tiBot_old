@@ -132,10 +132,16 @@ def database_mode(log, setting, db):
             for person in personList:
                 print(person)
         elif cmd == 'query':
-            q = input('database : query $ ')
-            results = db.query_fetchall(q)
-            for result in results:
-                print(result)
+            queryMode = True
+            while queryMode:
+                q = input('database : query $ ')
+                if q == 'e':
+                    queryMode = False
+                    break
+                results = db.query_fetchall(q)
+                for result in results:
+                    print(result)
+                
 
 def debug_commands():
     print('=====COMMAND LIST=====')
