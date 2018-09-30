@@ -78,7 +78,7 @@ class TweetThread():
             if media is None:
                 self.log.log(logger.LogLevel.INFO, 'post.mediaType: %s. Unable to download_image' % post.media.value)
                 return False
-            return self.twit.tweet_image(post.title, media)
+            return self.twit.tweet_image('%s %s' % (post.title, self.setting.hashTags), media)
         else:
             media = self.download_video(self.log, post.media)
             if media is None:
