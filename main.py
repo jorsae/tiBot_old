@@ -64,7 +64,7 @@ def maintenance(log, setting, db, twit, imgr, tweetThread, followThread):
             setting.runTweetThread = True
             setting.runFollowThread = True
             setting.runBot = True
-            startup.startup()            
+            startup.startup(setting.settingsFile)            
 
 
 def update_user_stats(log, db, twit):
