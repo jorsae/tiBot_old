@@ -70,6 +70,8 @@ class TweetThread():
                         self.log.log(logger.LogLevel.WARNING, 'Failed to update statistics for tweet id: %s, favorites: %s, retweets: %s' % (tweetId, favorites, retweets))
                 except Exception as e:
                         self.log.log(logger.LogLevel.ERROR, 'Failed to update statistics for tweet id: %s | %s' % (tweetId, e))
+        
+        self.log.log(logger.LogLevel.INFO, 'tweet_thread.run() is not running anymore: %s' % self.setting.runTweetThread)
 
     def tweet(self, post):
         """ Tweets an image. Returns twitter post id if successfull, False otherwise """

@@ -17,13 +17,15 @@ import database.query as query
 def start(log, setting, db, twit, imgr):
     twitterThread = tweet_thread.TweetThread(log, setting, db, twit, imgr)
 
-    tweetThread = threading.Thread(target=twitterThread.run)
-    tweetThread.daemon = True
-    tweetThread.start()
+    if setting.runTweetThread:
+        tweetThread = threading.Thread(target=twitterThread.run)
+        tweetThread.daemon = True
+        tweetThread.start()
     
-    followThread = threading.Thread(target=follow_thread.run, args=(log, setting, db, twit, imgr, ))
-    followThread.daemon = True
-    followThread.start()
+    if setting.runFollowThread:
+        followThread = threading.Thread(target=follow_thread.run, args=(log, setting, db, twit, imgr, ))
+        followThread.daemon = True
+        followThread.start()
 
     log.log(logger.LogLevel.INFO, 'tiBot is running')
     maintenance(log, setting, db, twit, imgr, tweetThread, followThread)
