@@ -1,6 +1,5 @@
 {
     "overall":{
-        "runBot":true,
         "runTweetThread":true,
         "runFollowThread":true,
         "database":"tiBot.db"
@@ -23,7 +22,6 @@
         "followFriends":[25, 2000],
         "followFollowers":[30, 2000],
         "followFavorites":[0, 500],
-        "followItems":100,
         "updateStatHour":"00",
         "updateTweetAfter":[1, 0],
         "followNewPerson":[0, 6],
@@ -31,12 +29,6 @@
     },
     "imgur":{
         "clientId":"<CLIENT_ID>",
-        "authLink":"https://api.imgur.com/3/gallery/r/a",
-        "tagLink":"https://api.imgur.com/3/gallery/t/",
-        "postBaseurl":"https://imgur.com/gallery/",
-        "downloadBaseurl":"https://imgur.com/download/",
-        "tags":["EXAMPLE_TAG"],
-        "maxImageSize":5000000,
-        "maxVideoSize":15000000
+        "tags":["EXAMPLE_TAG"]
     }
 }

@@ -6,13 +6,20 @@ import os
 class Settings():
     def __init__(self, settingsFile):
         self.settingsFile = settingsFile
+        self.runBot = True
+        self.maxImageSize = 5000000 # Max image size twitter supports.
+        self.maxVideoSize = 15000000 # Max video size twitter supports.
+        self.authLink = "https://api.imgur.com/3/gallery/r/a" # Imgur link used to check authentication
+        self.tagLink = "https://api.imgur.com/3/gallery/t/" # Imgur base link for searching up tags
+        self.postBaseurl = "https://imgur.com/gallery/" # Imgur base link for searching up a post
+        self.downloadBaseurl = "https://imgur.com/download/" # Imgur base link for downloading a post
+
         if os.path.isfile(self.settingsFile) is False:
             print('%s does not exist. Exiting')
             exit()
         try:
             settingsData = open(self.settingsFile)
             data = json.load(settingsData)
-            self.runBot = data["overall"]["runBot"]
             self.runTweetThread = data["overall"]["runTweetThread"]
             self.runFollowThread = data["overall"]["runFollowThread"]
             self.database = data["overall"]["database"]
@@ -34,20 +41,13 @@ class Settings():
             self.followFollowersMin, self.followFollowersMax = self.read_2values_array(data["twitter"]["followFollowers"])
             self.followFavoritesMin, self.followFavoritesMax = self.read_2values_array(data["twitter"]["followFavorites"])
             
-            self.followItems = data["twitter"]["followItems"]
             self.updateStatHour = data["twitter"]["updateStatHour"]
             self.updateTweetAfter = self.read_datetime_array(data["twitter"]["updateTweetAfter"])
             self.followNewPerson = self.read_datetime_array(data["twitter"]["followNewPerson"])
             self.unfollowPersonAfter = self.read_datetime_array(data["twitter"]["unfollowPersonAfter"])
 
             self.imgurHeaders = {'authorization':'Client-Id %s' % data["imgur"]["clientId"]}
-            self.authLink = data["imgur"]["authLink"]
-            self.tagLink = data["imgur"]["tagLink"]
-            self.postBaseurl = data["imgur"]["postBaseurl"]
-            self.downloadBaseurl = data["imgur"]["downloadBaseurl"]
             self.imgurTags = data["imgur"]["tags"]
-            self.maxImageSize = data["imgur"]["maxImageSize"]
-            self.maxVideoSize = data["imgur"]["maxVideoSize"]
         except Exception as e:
             print('Exception: %s' % e)
 
@@ -73,8 +73,6 @@ class Settings():
         if type(self.followFavoritesMin) != int:
             return False
         if type(self.followFavoritesMax) != int:
-            return False
-        if type(self.followItems) != int:
             return False
         return True
 
