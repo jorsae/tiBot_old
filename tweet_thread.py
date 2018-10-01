@@ -24,7 +24,7 @@ class TweetThread():
         while self.setting.runTweetThread:
             secDelay = self.delay_tweet()
             self.log.log(logger.LogLevel.INFO, 'Tweeting in %d seconds' % secDelay)
-            #time.sleep(secDelay)
+            time.sleep(secDelay)
 
             # Tweet an image
             tweeted = False
