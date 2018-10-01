@@ -1,4 +1,5 @@
 import os
+import random
 import requests
 import datetime
 import time
@@ -23,7 +24,7 @@ class TweetThread():
         while self.setting.runTweetThread:
             secDelay = self.delay_tweet()
             self.log.log(logger.LogLevel.INFO, 'Tweeting in %d seconds' % secDelay)
-            time.sleep(secDelay)
+            #time.sleep(secDelay)
 
             # Tweet an image
             tweeted = False
@@ -75,19 +76,29 @@ class TweetThread():
 
     def tweet(self, post):
         """ Tweets an image. Returns twitter post id if successfull, False otherwise """
+        hashTags = self.get_hashtags(self.setting.hashTags)
+
         if post.mediaType == imgur.MediaType.IMAGE.value:
             media = self.download_image(self.log, post.media)
             if media is None:
                 self.log.log(logger.LogLevel.INFO, 'post.mediaType: %s. Unable to download_image' % post.media.value)
                 return False
-            return self.twit.tweet_image('%s %s' % (post.title, self.setting.hashTags), media)
+            return self.twit.tweet_image('%s %s' % (post.title, hashTags), media)
         else:
             media = self.download_video(self.log, post.media)
             if media is None:
                 self.log.log(logger.LogLevel.INFO, 'post.mediaType: %s. Unable to download_video' % post.media.value)
                 return False
-            return self.twit.tweet_video('%s %s' % (post.title, self.setting.hashTags), media)
+            return self.twit.tweet_video('%s %s' % (post.title, hashTags), media)
         return False
+
+    def get_hashtags(self, hashTags):
+        """ Gets a random amount of hashtags between 1 and 5(or highest amount of hashTags available) """
+        max = 5
+        if max > len(hashTags):
+            max = len(hashTags)
+        amount = random.randint(1, max)
+        return ' '.join(random.sample(hashTags, amount))
 
     def add_tweet_db(self, post, tweetId):
         dbPosts = self.db.query_commit(query.QUERY_INSERT_POSTS(), self.imgr.post_to_tuple(tweetId, post))

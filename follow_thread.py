@@ -123,5 +123,4 @@ def get_person_list(r):
     return set(personList)
 
 def get_search_q(setting):
-    hashTags = setting.hashTags.split(' ')
-    return hashTags[random.randint(0, len(hashTags) - 1)]
+    return setting.hashTags[random.randint(0, len(setting.hashTags) - 1)]

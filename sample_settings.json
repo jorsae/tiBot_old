@@ -17,7 +17,7 @@
         "accessSecret":"<ACCESS_SECRET>",
         "twitterName":"<TWITTER_NAME>",
         "tempFile":"<TEMP_FILE>",
-        "hashTags":"#example #hashtags",
+        "hashTags":["#example", "#hashtags"],
         "followTweets":[20, 50000],
         "followFriends":[25, 2000],
         "followFollowers":[30, 2000],
