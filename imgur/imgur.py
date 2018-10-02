@@ -75,7 +75,6 @@ class Imgur():
             result = post
             for indice in indices:
                 result = result[indice]
-            #print('get_value(): %s | %s' % (result, indices))
             return result
         except Exception as e:
             return None
@@ -112,7 +111,7 @@ class Imgur():
             if media is None:
                 media = self.get_value(post, ('mp4', ))
         else:
-            self.logger.log(logger.LogLevel.CRITICAL, 'mediaType is not Image or Video' % e)
+            self.logger.log(logger.LogLevel.WARNING, 'mediaType is not Image or Video' % e)
             return None
 
         #check if image/video is over max size
