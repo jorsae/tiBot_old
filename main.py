@@ -1,4 +1,5 @@
 import os
+import shutil
 import random
 import datetime
 import threading
@@ -40,6 +41,7 @@ def maintenance(log, setting, db, twit, imgr, tweetThread, followThread):
                 update_user_stats(log, db, twit)
                 lastUpdateDay = datetime.datetime.now().day
                 log.log(logger.LogLevel.INFO, 'Updated user statistics')
+                backup_database(log, setting)
 
         #Every hour
         if (timePast % 12) == 0 and timePast != 0:
@@ -68,6 +70,18 @@ def maintenance(log, setting, db, twit, imgr, tweetThread, followThread):
             setting.runBot = True
             startup.startup(setting.settingsFile)            
 
+
+def backup_database(log, setting):
+    if setting.backupFolder is "":
+        return
+    os.makedirs(setting.backupFolder, exist_ok=True)
+    databaseSplit = os.path.splitext(setting.database)
+    backupFile = '%s/%s_%s%s' % (setting.backupFolder, databaseSplit[0], datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S"), databaseSplit[1])
+    try:
+        shutil.copyfile(setting.database, backupFile)
+        log.log(logger.LogLevel.INFO, 'Created database backup: %s/%s' % (setting.backupFolder, backupFile))
+    except Exception as e:
+        log.log(logger.LogLevel.ERROR, 'Failed to create database backup: %s/%s: %s' % (setting.database, setting.backupFolder, e))
 
 def update_user_stats(log, db, twit):
     followers, tweets, friends, favorites = twit.get_user_stats()

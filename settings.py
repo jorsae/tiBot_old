@@ -23,6 +23,7 @@ class Settings():
             self.runTweetThread = data["overall"]["runTweetThread"]
             self.runFollowThread = data["overall"]["runFollowThread"]
             self.database = data["overall"]["database"]
+            self.backupFolder = data["overall"]["backupDatabase"]
 
             self.logFileName = data["logger"]["logFileName"]
             self.LOGGER_PRINT_LEVEL = self.get_logger_print_level(data["logger"]["lOGGER_PRINT_LEVEL"])
