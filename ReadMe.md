@@ -1,4 +1,5 @@
 This is a twitter/imgur bot.
+===
 
 You give it an imgur tag(s) and it will find a post and retweet it.
 It supports both images and video posts.
