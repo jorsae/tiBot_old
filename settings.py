@@ -15,7 +15,7 @@ class Settings():
         self.downloadBaseurl = "https://imgur.com/download/" # Imgur base link for downloading a post
 
         if os.path.isfile(self.settingsFile) is False:
-            print('%s does not exist. Exiting')
+            print('%s does not exist. Exiting' % self.settingsFile)
             exit()
         try:
             settingsData = open(self.settingsFile)
