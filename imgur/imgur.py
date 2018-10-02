@@ -137,4 +137,8 @@ class Imgur():
     
     def get_rates(self):
         req = requests.get('https://api.imgur.com/3/credits', headers=self.setting.imgurHeaders)
-        print(req.headers)
+        print('X-RateLimite-UserLimit: %s' % str(req.headers.get('X-RateLimit-UserLimit')))
+        print('X-RateLimit-UserRemaining: %s' % str(req.headers.get('X-RateLimit-UserRemaining')))
+        print('X-RateLimit-UserReset: %s' % str(req.headers.get('X-RateLimit-UserReset')))
+        print('X-RateLimit-ClientLimit: %s' % str(req.headers.get('X-RateLimit-ClientLimit')))
+        print('X-RateLimit-ClientRemaining: %s' % str(req.headers.get('X-RateLimit-ClientRemaining')))
