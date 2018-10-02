@@ -134,3 +134,7 @@ class Imgur():
         req = requests.get('%s%s' % (self.setting.tagLink, tag), headers=self.setting.imgurHeaders)
         for post in req.json()['data']['items']:
             print(post)
+    
+    def get_rates(self):
+        req = requests.get('https://api.imgur.com/3/credits', headers=self.setting.imgurHeaders)
+        print(req.headers)

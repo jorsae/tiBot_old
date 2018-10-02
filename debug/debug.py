@@ -54,6 +54,8 @@ def imgur_mode(log, setting, imgr):
                 if os.path.isfile(fileName):
                     os.remove(fileName)
                 return None
+        elif cmd == 'get rates':
+            imgr.get_rates()
 
 
 def twitter_mode(log, db, twit):
