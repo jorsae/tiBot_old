@@ -54,7 +54,7 @@ class TweetThread():
                     favorites, retweets = self.twit.get_tweet_stats(tweetId)
                     # If tweet has been deleted/ no connection to twitter API
                     if favorites is False:
-                        dbCommit = db.query_commit(query.QUERY_UPDATE_TWEET_DELETED(), (tweetId, ))
+                        dbCommit = self.db.query_commit(query.QUERY_UPDATE_TWEET_DELETED(), (tweetId, ))
                         if dbCommit:
                             self.log.log(logger.LogLevel.INFO, 'Tweet: %s, has been deleted. Updated database successfully' % tweetId)
                         else:
