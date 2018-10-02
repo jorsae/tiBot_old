@@ -50,7 +50,11 @@ class Imgur():
         """ Get all possible posts to tweet """
         postList = []
         for tag in self.setting.imgurTags:
-            req = requests.get('%s%s' % (self.setting.tagLink, tag), headers=self.setting.imgurHeaders)
+            try:
+                req = requests.get('%s%s' % (self.setting.tagLink, tag), headers=self.setting.imgurHeaders)
+            except Exception as e:
+                self.logger.log(logger.LogLevel.CRITICAL, 'imgur.get_posts exception: %s' % e)
+                break
             for post in req.json()['data']['items']:
                 p = self.json_to_post(post, tag)
                 if p is not None:
