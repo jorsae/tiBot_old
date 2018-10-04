@@ -122,7 +122,7 @@ class TweetThread():
         else:
             if os.path.isfile(fileName):
                 os.remove(fileName)
-            self.log.log(logger.LogLevel.ERROR, 'Failed to download image: %s | %s' % (url, e))
+            self.log.log(logger.LogLevel.ERROR, 'Failed to download image: %s' % url)
             return None 
 
     def download_video(self, log, videoID):
