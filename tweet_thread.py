@@ -81,13 +81,13 @@ class TweetThread():
         if post.mediaType == imgur.MediaType.IMAGE.value:
             media = self.download_image(self.log, post.media)
             if media is None:
-                self.log.log(logger.LogLevel.INFO, 'post.mediaType: %s. Unable to download_image' % post.media.value)
+                self.log.log(logger.LogLevel.INFO, 'post.mediaType: %s. Unable to download_image' % post.media)
                 return False
             return self.twit.tweet_image('%s %s' % (post.title, hashTags), media)
         else:
             media = self.download_video(self.log, post.media)
             if media is None:
-                self.log.log(logger.LogLevel.INFO, 'post.mediaType: %s. Unable to download_video' % post.media.value)
+                self.log.log(logger.LogLevel.INFO, 'post.mediaType: %s. Unable to download_video' % post.media)
                 return False
             return self.twit.tweet_video('%s %s' % (post.title, hashTags), media)
         return False
