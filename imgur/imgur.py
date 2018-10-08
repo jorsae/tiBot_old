@@ -40,10 +40,10 @@ class Imgur():
                 self.logger.log(logger.LogLevel.INFO, 'Imgur authenticated successfully')
                 return True
             else:
-                self.logger.log(logger.LogLevel.ERROR, 'Failed to authenticate imgur.')
+                self.logger.log(logger.LogLevel.ERROR, 'Failed to authenticate imgur. Status: %d' % (req.json()['status']))
                 return False
         except Exception as e:
-            self.logger.log(logger.LogLevel.ERROR, 'imgur authenticate exception: %s' % e)    
+            self.logger.log(logger.LogLevel.CRITICAL, 'imgur authenticate exception: %s' % e)    
             return False
 
     def get_posts(self):
