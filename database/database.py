@@ -53,6 +53,7 @@ class Database():
                 c.execute(q)
             else:
                 c.execute(q, param)
+            self.logger.log(logger.LogLevel.DEBUG, 'database.fetchall: %s | %s' % (q, param))            
             return c.fetchall()
         except Exception as e:
             self.logger.log(logger.LogLevel.ERROR, 'database.fetchall: %s. %s | %s' % (e, q, param))
@@ -66,6 +67,7 @@ class Database():
                 c.execute(q)
             else:
                 c.execute(q, param)
+            self.logger.log(logger.LogLevel.DEBUG, 'database.fetchone: %s | %s' % (q, param))            
             return c.fetchone()
         except Exception as e:
             self.logger.log(logger.LogLevel.ERROR, 'database.fetchone: %s. %s | %s' % (e, q, param))
@@ -114,8 +116,8 @@ class Database():
                 c.execute(q)
             else:
                 c.execute(q, param)
+            self.logger.log(logger.LogLevel.DEBUG, 'database.query_commit: %s | %s' % (q, param), True)
             self.connection.commit()
-            self.logger.log(logger.LogLevel.DEBUG, 'database.query_commit: %s | %s' % (q, param))
             return True
         except Exception as e:
             self.logger.log(logger.LogLevel.ERROR, 'database.query_commit: %s' % e)
