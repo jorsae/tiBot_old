@@ -40,10 +40,10 @@ class Twitter():
         """ returns followers, tweets, friends, favorites to the authenticated user """ 
         r = self.api.request('account/verify_credentials')
         if r.status_code == 200:
-            self.log.log(logger.LogLevel.DEBUG, 'twitter.get_user_stats() Got user statistics.')
+            self.log.log(logger.LogLevel.DEBUG, 'twitter.get_user_stats: Got user statistics.')
             return r.json()['followers_count'], r.json()['statuses_count'], r.json()['friends_count'], r.json()['favourites_count']
         else:
-            self.log.log(logger.LogLevel.ERROR, 'twitter.get_user_stats(): Failed to get user stats')
+            self.log.log(logger.LogLevel.ERROR, 'twitter.get_user_stats: Failed to get user stats')
             return None
     
     def delete_tweet(self, tweetId):
@@ -53,7 +53,7 @@ class Twitter():
             self.log.log(logger.LogLevel.INFO, 'Deleted tweet: %s' % tweetId)
             return True
         else:
-            self.log.log(logger.LogLevel.ERROR, 'Unable to delete tweet: %s' % tweetId)
+            self.log.log(logger.LogLevel.WARNING, 'Unable to delete tweet: %s' % tweetId)
             return False
 
     def delete_last_tweets(self, amount):
@@ -83,10 +83,10 @@ class Twitter():
             if code == 144:
                 self.log.log(logger.LogLevel.INFO, 'Tweet: %s has been deleted' % tweetId)
                 return False, False
-            self.log.log(logger.LogLevel.CRITICAL, 'twitter.get_tweeet_stats(): status_code: %d | %s' % (r.status_code, r.text))
+            self.log.log(logger.LogLevel.ERROR, 'twitter.get_tweet_stats: status_code: %d | %s' % (r.status_code, r.text))
             return None, None
         else:
-            self.log.log(logger.LogLevel.ERROR, 'Unable to get statistics for tweet: %s' % tweetId)
+            self.log.log(logger.LogLevel.WARNING, 'Unable to get statistics for tweet: %s' % tweetId)
             return None, None
 
     def tweet_text(self, msg):
@@ -129,7 +129,7 @@ class Twitter():
         """ Tweets text video(mp4). Returns tweetId, or False """
         uVid = self.upload_video(vid)
         if uVid is None:
-            self.log.log(logger.LogLevel.ERROR, 'uVid is None. msg: %s, %s' % (msg, vid))
+            self.log.log(logger.LogLevel.WARNING, 'uVid is None. msg: %s, %s' % (msg, vid))
             return False
 
         r = self.api.request('statuses/update', {'status':msg, 'media_ids':uVid})
@@ -147,7 +147,7 @@ class Twitter():
             upload = self.api.request('media/upload', {'command':'INIT', 'media_type':'video/mp4', 'total_bytes':totalBytes})
             mediaId = upload.json()['media_id']
         except Exception as e:
-            self.log.log(logger.LogLevel.CRITICAL, 'Uploading INIT: %s' % e)
+            self.log.log(logger.LogLevel.ERROR, 'Uploading INIT: %s' % e)
             return None
 
         file = open(vid, 'rb')
@@ -160,7 +160,7 @@ class Twitter():
                 if self.check_upload_video_status(r, mediaId) is False:
                     return None
             except Exception as e:
-                self.log.log(logger.LogLevel.CRITICAL, 'Uploading APPEND(%d): %s as %s | BytesSent: %d/%d\nException: %s' % (segmentId, mediaId, vid, bytesSent, totalBytes, e))
+                self.log.log(logger.LogLevel.ERROR, 'Uploading APPEND(%d): %s as %s | BytesSent: %d/%d\nException: %s' % (segmentId, mediaId, vid, bytesSent, totalBytes, e))
                 return None
             segmentId += 1
             bytesSent += file.tell()
@@ -168,7 +168,7 @@ class Twitter():
         try:
             r = self.api.request('media/upload', {'command':'FINALIZE', 'media_id':mediaId})
         except Exception as e:
-            self.log.log(logger.LogLevel.CRITICAL, 'Uploading FINALIZE: %s as %s\nException %s' % (mediaId, vid, e))
+            self.log.log(logger.LogLevel.ERROR, 'Uploading FINALIZE: %s as %s\nException %s' % (mediaId, vid, e))
             return None
 
         if self.check_upload_video_status(r, mediaId) is False:
@@ -192,7 +192,7 @@ class Twitter():
             self.log.log(logger.LogLevel.INFO, 'Retweeted: %s' % tweetId)
             return True
         else:
-            self.log.log(logger.LogLevel.ERROR, 'Could not retweet: %s' % tweetId)
+            self.log.log(logger.LogLevel.WARNING, 'Could not retweet: %s' % tweetId)
             return False
 
     def follow_by_id(self, followId):
@@ -203,7 +203,7 @@ class Twitter():
             self.log.log(logger.LogLevel.INFO, 'Followed: %s, (%s)' % (screenName, followId))
             return True
         else:
-            self.log.log(logger.LogLevel.INFO, 'twitter.follow_by_id(): Unable to follow: %s' % followId)
+            self.log.log(logger.LogLevel.WARNING, 'twitter.follow_by_id(): Unable to follow: %s' % followId)
             return False
 
     def unfollow_by_id(self, followId):
@@ -214,7 +214,7 @@ class Twitter():
             self.log.log(logger.LogLevel.INFO, "Unfollowed: %s (%s)" % (screenName, followId))
             return True
         else:
-            self.log.log(logger.LogLevel.INFO, "Failed to unfollow: %s" % followId)
+            self.log.log(logger.LogLevel.WARNING, "Failed to unfollow: %s" % followId)
             return False
     
     def follow_by_name(self, screenName):
@@ -224,7 +224,7 @@ class Twitter():
             self.log.log(logger.LogLevel.INFO, 'Followed: %s' % screenName)
             return True
         else:
-            self.log.log(logger.LogLevel.INFO, 'twitter.follow_by_name(): Unable to follow: %s' % screenName)
+            self.log.log(logger.LogLevel.WARNING, 'twitter.follow_by_name: Unable to follow: %s' % screenName)
             return False
     
     def unfollow_by_name(self, screenName):
@@ -235,10 +235,10 @@ class Twitter():
                 self.log.log(logger.LogLevel.INFO, "Unfollowed: %s" % screenName)
                 return True
             else:
-                self.log.log(logger.LogLevel.INFO, "Failed to unfollow: %s" % followId)
+                self.log.log(logger.LogLevel.WARNING, "Failed to unfollow: %s" % followId)
                 return False
         except Exception as e:
-                self.log.log(logger.LogLevel.WARNING, "Failed to unfollow, with exception: %s" % e)
+                self.log.log(logger.LogLevel.ERROR, "Failed to unfollow, with exception: %s" % e)
                 return False
     
     def get_rates(self):
@@ -253,5 +253,5 @@ class Twitter():
             if r.status_code == 200:
                 return r
         except Exception as e:
-            self.logger.log(logger.LogLevel.WARNING, "twitter.search(%s): %s" % (q, e))
+            self.log.log(logger.LogLevel.ERROR, "twitter.search(%s): %s" % (q, e))
             return None
