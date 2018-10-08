@@ -1,7 +1,7 @@
 import argparse
-import logger
-import settings
-import main
+import tiBot.main as main
+import util.logger as logger
+import util.settings as settings
 import twitter.twitter as twitter
 import imgur.imgur as imgur
 import database.database as database

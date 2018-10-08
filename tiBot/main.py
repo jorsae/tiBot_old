@@ -4,11 +4,10 @@ import random
 import datetime
 import threading
 import time
-import logger
-import tweet_thread
-import follow_thread
-import settings
-import startup
+import tiBot.tweet_thread as tweet_thread
+import tiBot.follow_thread as follow_thread
+import util.logger as logger
+import util.settings as settings
 import twitter.twitter as twitter
 import imgur.imgur as imgur
 import database.database as database

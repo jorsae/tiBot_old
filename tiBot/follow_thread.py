@@ -1,12 +1,12 @@
 import random
 import time
 import datetime
-import logger
+import util.logger as logger
 import twitter.twitter as twitter
 import imgur.imgur as imgur
 import database.database as database
 import database.query as query
-import settings
+import util.settings as settings
 
 class TwitterAccount():
     def __init__(self, screenName, followers, friends, favorites, tweets):

@@ -3,13 +3,13 @@ import random
 import requests
 import datetime
 import time
-import logger
+import util.logger as logger
 import twitter.twitter as twitter
 import imgur.imgur as imgur
 import database.database as database
 import debug.debug as debug
 import database.query as query
-import settings
+import util.settings as settings
 
 class TweetThread():
     def __init__(self, log, setting, db, twit, imgr):

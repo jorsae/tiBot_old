@@ -2,8 +2,8 @@ from TwitterAPI import TwitterAPI
 import sys
 import os
 sys.path.append("..")
-import logger
-import settings
+import util.logger as logger
+import util.settings as settings
 
 class Twitter():
     """ Twitter class """

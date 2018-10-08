@@ -1,5 +1,5 @@
 import datetime
-import logger
+import util.logger as logger
 import json
 import os
 

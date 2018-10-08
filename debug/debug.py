@@ -4,8 +4,8 @@ import datetime
 sys.path.append("..")
 import argparse
 import database.query as query
-import logger
-import settings
+import util.logger as logger
+import util.settings as settings
 import twitter.twitter as twitter
 import imgur.imgur as imgur
 import database.database as database

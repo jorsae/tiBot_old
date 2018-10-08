@@ -4,8 +4,8 @@ import random
 import requests
 import sys
 sys.path.append("..")
-import logger
-import settings
+import util.logger as logger
+import util.settings as settings
 
 class MediaType(Enum):
     """ MediaTypes """

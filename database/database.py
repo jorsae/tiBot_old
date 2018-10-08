@@ -2,7 +2,7 @@ import database.query as query
 import sqlite3
 import sys
 sys.path.append("..")
-import logger
+import util.logger as logger
 
 class Database():
     """ Database class """
