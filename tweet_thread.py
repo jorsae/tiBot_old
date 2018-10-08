@@ -34,7 +34,6 @@ class TweetThread():
                 self.log.log(logger.LogLevel.DEBUG, 'Trying to tweet(%s): %s' % (post.mediaType, post.postId))
                 if self.tweeted_before(self.db, post) is False:
                     tweeted = self.tweet(post)
-                    self.log.log(logger.LogLevel.DEBUG, 'Tweeted: %s' % tweeted)
                     if tweeted is False:
                         continue
                     else:
@@ -58,10 +57,10 @@ class TweetThread():
                         if dbCommit:
                             self.log.log(logger.LogLevel.INFO, 'Tweet: %s, has been deleted. Updated database successfully' % tweetId)
                         else:
-                            self.log.log(logger.LogLevel.INFO, 'Tweet: %s, has been deleted. Failed to update database' % tweetId)
+                            self.log.log(logger.LogLevel.ERROR, 'Tweet: %s, has been deleted. Failed to update database' % tweetId)
                         continue
                     elif favorites is None:
-                        self.log.log(logger.LogLevel.INFO, 'Failed to get tweet stats for tweetId: %s' % tweetId)
+                        self.log.log(logger.LogLevel.WARNING, 'Failed to get tweet stats for tweetId: %s' % tweetId)
                         continue
                     
                     updated = self.db.query_commit(query.QUERY_UPDATE_POSTS(), (favorites, retweets, tweetId))
@@ -72,7 +71,7 @@ class TweetThread():
                 except Exception as e:
                         self.log.log(logger.LogLevel.ERROR, 'Failed to update statistics for tweet id: %s | %s' % (tweetId, e))
         
-        self.log.log(logger.LogLevel.INFO, 'tweet_thread.run() is not running anymore: %s' % self.setting.runTweetThread)
+        self.log.log(logger.LogLevel.CRITICAL, 'tweet_thread.run is not running anymore: %s' % self.setting.runTweetThread)
 
     def tweet(self, post):
         """ Tweets an image. Returns twitter post id if successfull, False otherwise """
@@ -81,13 +80,13 @@ class TweetThread():
         if post.mediaType == imgur.MediaType.IMAGE.value:
             media = self.download_image(self.log, post.media)
             if media is None:
-                self.log.log(logger.LogLevel.INFO, 'post.mediaType: %s. Unable to download_image' % post.media)
+                self.log.log(logger.LogLevel.WARNING, 'post.mediaType: %s. Unable to download_image' % post.media)
                 return False
             return self.twit.tweet_image('%s %s' % (post.title, hashTags), media)
         else:
             media = self.download_video(self.log, post.media)
             if media is None:
-                self.log.log(logger.LogLevel.INFO, 'post.mediaType: %s. Unable to download_video' % post.media)
+                self.log.log(logger.LogLevel.WARNING, 'post.mediaType: %s. Unable to download_video' % post.media)
                 return False
             return self.twit.tweet_video('%s %s' % (post.title, hashTags), media)
         return False
@@ -106,8 +105,8 @@ class TweetThread():
         if dbPosts and dbTweets:
             self.log.log(logger.LogLevel.INFO, 'Added tweet: %s to database' % post.postId)
         else:
-            self.log.log(logger.LogLevel.WARNING, 'Added tweet to table \'%s\': %s' % (query.TABLE_TWEETS, dbTweets))
-            self.log.log(logger.LogLevel.WARNING, 'Added tweet to table \'%s\': %s' % (query.TABLE_POSTS, dbPosts))
+            self.log.log(logger.LogLevel.ERROR, 'Added tweet to table \'%s\': %s' % (query.TABLE_TWEETS, dbTweets))
+            self.log.log(logger.LogLevel.ERROR, 'Added tweet to table \'%s\': %s' % (query.TABLE_POSTS, dbPosts))
 
     def download_image(self, log, imageID):
         """ Downloads image """

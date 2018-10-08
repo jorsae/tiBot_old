@@ -89,4 +89,4 @@ def update_user_stats(log, db, twit):
     if dbQuery:
         log.log(logger.LogLevel.INFO, 'Inserted user statistics to database')
     else:
-        log.log(logger.LogLevel.INFO, 'Failed to update user statistics to database') 
+        log.log(logger.LogLevel.ERROR, 'Failed to update user statistics to database') 

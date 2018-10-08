@@ -1,22 +1,3 @@
-"""
-settings.TWITTER_ADD_TWEETS_MIN = 20
-settings.TWITTER_ADD_TWEETS_MAX = 50000
-settings.TWITTER_ADD_FRIENDS_MIN = 25
-settings.TWITTER_ADD_FRIENDS_MAX = 2000
-settings.TWITTER_ADD_FOLLOWERS_MIN = 30
-settings.TWITTER_ADD_FOLLOWERS_MAX = 2000
-settings.TWITTER_ADD_FAVORITES_MIN = 0
-settings.TWITTER_ADD_FAVORITES_MAX = 500
-
-statuses[]
-    -> user
-        -> id
-        -> screen_name
-        -> followers_count | x follow screen_name
-        -> friends_count | screen_name follows x
-        -> favourites_count | likes
-        -> statuses_count | total tweets
-"""
 import random
 import time
 import datetime
@@ -39,19 +20,21 @@ class TwitterAccount():
         return '%s: %d %d %d %d' % (self.screenName, self.followers, self.friends, self.favorites, self.tweets)
 
 def run(log, setting, db, twit, imgr):
-    log.log(logger.LogLevel.INFO, 'follow_thread.run() is now running: %s' % setting.runFollowThread)
+    log.log(logger.LogLevel.INFO, 'follow_thread.run is now running: %s' % setting.runFollowThread)
     while setting.runFollowThread:
         # Find a person
         q = get_search_q(setting)
         result = twit.search(q, 100)
+        person = None
         if result is None:
-            log.log(logger.LogLevel.ERROR, 'follow_thread.run(): No result when searching \'%s\'' % q)
-        personList = get_person_list(result)
-        person = get_person(db, personList, setting)
+            log.log(logger.LogLevel.WARNING, 'follow_thread.run: No result when searching \'%s\'' % q)
+        else:
+            personList = get_person_list(result)
+            person = get_person(db, personList, setting)
 
         # Follow person
         if person is None:
-            log.log(logger.LogLevel.ERROR, 'Did not find anyone to follow out of: %d' % len(personList))
+            log.log(logger.LogLevel.WARNING, 'Did not find anyone to follow out of: %d' % len(personList))
         else:
             followed = twit.follow_by_name(person.screenName)
             if followed:
@@ -59,9 +42,9 @@ def run(log, setting, db, twit, imgr):
                 if q:
                     log.log(logger.LogLevel.DEBUG, 'Added %s to database' % person.screenName)
                 else:
-                    log.log(logger.LogLevel.INFO, 'Failed to add %s to database' % person.screenName)
+                    log.log(logger.LogLevel.ERROR, 'Failed to add %s to database' % person.screenName)
             else:
-                log.log(logger.LogLevel.ERROR, 'Failed to follow: %s' % person.to_string())
+                log.log(logger.LogLevel.WARNING, 'Failed to follow: %s' % person.to_string())
         
         # Unfollow person
         endDate = datetime.datetime.now() - setting.unfollowPersonAfter
@@ -76,17 +59,18 @@ def run(log, setting, db, twit, imgr):
                 if res is False:
                     unfollow_in_db(log, db, screenName)
                 else:
-                    log.log(logger.LogLevel.CRITICAL, 'Failed to unfollow a person that exists: %s' % screenName)
+                    log.log(logger.LogLevel.ERROR, 'Failed to unfollow a person that exists: %s' % screenName)
 
         log.log(logger.LogLevel.INFO, 'follow_thread.run() sleeping for: %d' % setting.followNewPerson.total_seconds())
         time.sleep(setting.followNewPerson.total_seconds())
+    log.log(logger.LogLevel.CRITICAL, 'follow_thread.run is not running anymore: %s' % self.setting.runFollowThread)
 
 def unfollow_in_db(log, db, screenName):
     dbResult = db.query_commit(query.QUERY_UPDATE_FOLLOWS(), (screenName, ))
     if dbResult:
         log.log(logger.LogLevel.DEBUG, 'Updated database: %s unfollowed successfully' % screenName)
     else:
-        log.log(logger.LogLevel.WARNING, 'Unable to update followingNow status on person: %s' % screenName)
+        log.log(logger.LogLevel.ERROR, 'Unable to update followingNow status on person: %s' % screenName)
 
 def get_person(db, personList, setting):
     for person in personList:
