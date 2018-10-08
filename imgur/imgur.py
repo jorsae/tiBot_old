@@ -111,7 +111,7 @@ class Imgur():
             if media is None:
                 media = self.get_value(post, ('mp4', ))
         else:
-            self.logger.log(logger.LogLevel.WARNING, 'mediaType is not Image or Video' % e)
+            self.logger.log(logger.LogLevel.WARNING, 'mediaType is not Image or Video')
             return None
 
         #check if image/video is over max size
