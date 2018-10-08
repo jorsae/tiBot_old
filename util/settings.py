@@ -35,7 +35,7 @@ class Settings():
             self.accessToken = data["twitter"]["accessToken"]
             self.accessSecret = data["twitter"]["accessSecret"]
             self.twitterName = data["twitter"]["twitterName"]
-            self.tempFile = data["twitter"]["tempFile"]
+            self.tempFile = "resources/%s" % data["twitter"]["tempFile"]
             self.hashTags = data["twitter"]["hashTags"]
             self.followTweetsMin, self.followTweetsMax = self.read_2values_array(data["twitter"]["followTweets"])
             self.followFriendsMin, self.followFriendsMax = self.read_2values_array(data["twitter"]["followFriends"])
