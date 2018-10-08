@@ -44,7 +44,7 @@ def imgur_mode(log, setting, imgr):
             print(r.text)
         elif cmd =='download':
             url = input('url: ')
-            fileName = "debug.mp4"
+            fileName = "resources/debug.mp4"
             try:
                 with open(fileName, 'wb') as file:
                     response = requests.get(url)
@@ -67,7 +67,7 @@ def twitter_mode(log, db, twit):
             debugTwitter = False
         elif cmd == 'test tweet':
             testPost = imgur.Post('1Gyav', 'Online gaming in a nutshell', imgur.MediaType.IMAGE, 'https://i.imgur.com/LLqrC7R.jpg', 1000, 'aww', 0, 0, 0)
-            twit.tweet_image(testPost.title, 'test.jpg')
+            twit.tweet_image(testPost.title, 'resources/test.jpg')
         elif cmd == 'rate limit':
             rates = twit.get_rate_limit()
             print(rates)
@@ -81,7 +81,7 @@ def twitter_mode(log, db, twit):
             print('Unfollowed: %s | %s' % (screenName, resp))
         elif cmd == 'test tweet gif':
             testPost = imgur.Post('1Gyav', 'Online gaming in a nutshell', imgur.MediaType.VIDEO, 'https://i.imgur.com/BpklzcF.mp4', 1000, 'aww', 0, 0, 0)
-            twit.tweet_video(testPost.title, 'test.mp4')
+            twit.tweet_video(testPost.title, 'resources/test.mp4')
             print('done')
         elif cmd == 'get rates':
             twit.get_rates()
