@@ -112,7 +112,7 @@ class TweetThread():
     def download_image(self, log, imageID):
         """ Downloads image """
         fileName = '%s.jpg' % self.setting.tempFile
-        url = '%s%s' % (self.setting.downloadBaseurl, imageID)
+        url = '%s%s.mp4' % (self.setting.downloadBaseurl, imageID)
         r = requests.get(url, stream=True)
         if r.status_code == 200:
             with open(fileName, 'wb') as image:
@@ -123,7 +123,7 @@ class TweetThread():
             if os.path.isfile(fileName):
                 os.remove(fileName)
             self.log.log(logger.LogLevel.ERROR, 'Failed to download image: %s' % url)
-            return None 
+            return None
 
     def download_video(self, log, videoID):
         """ Downloads video (mp4) """

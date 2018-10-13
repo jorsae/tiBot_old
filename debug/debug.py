@@ -43,17 +43,17 @@ def imgur_mode(log, setting, imgr):
             r = requests.get('https://api.imgur.com/3/image/%s' % post, headers=setting.imgurHeaders)
             print(r.text)
         elif cmd =='download':
-            url = input('url: ')
+            id = input('id: ')
+            url = 'https://i.imgur.com/%s.mp4' % id
             fileName = "resources/debug.mp4"
-            try:
-                with open(fileName, 'wb') as file:
-                    response = requests.get(url)
-                    file.write(response.content)
+            r = requests.get(url, stream=True)
+            if r.status_code == 200:
+                with open(fileName, 'wb') as image:
+                    for chunk in r:
+                        image.write(chunk)
                 return fileName
-            except Exception as e:
-                if os.path.isfile(fileName):
-                    os.remove(fileName)
-                return None
+            else:
+                print('Can\'t download image: %s id')
         elif cmd == 'get rates':
             imgr.get_rates()
 

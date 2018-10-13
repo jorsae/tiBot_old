@@ -12,7 +12,7 @@ class Settings():
         self.authLink = "https://api.imgur.com/3/gallery/r/a" # Imgur link used to check authentication
         self.tagLink = "https://api.imgur.com/3/gallery/t/" # Imgur base link for searching up tags
         self.postBaseurl = "https://imgur.com/gallery/" # Imgur base link for searching up a post
-        self.downloadBaseurl = "https://imgur.com/download/" # Imgur base link for downloading a post
+        self.downloadBaseurl = "https://i.imgur.com/" # Imgur base link for downloading a post
 
         if os.path.isfile(self.settingsFile) is False:
             print('%s does not exist. Exiting' % self.settingsFile)
