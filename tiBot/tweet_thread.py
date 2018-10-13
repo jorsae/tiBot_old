@@ -128,7 +128,7 @@ class TweetThread():
     def download_video(self, log, videoID):
         """ Downloads video (mp4) """
         fileName = '%s.mp4' % self.setting.tempFile
-        url = '%s%s.mp4' % (self.setting.downloadBaseurl, imageID)
+        url = '%s%s.mp4' % (self.setting.downloadBaseurl, videoID)
         try:
             with open(fileName, 'wb') as file:
                 response = requests.get(url)
