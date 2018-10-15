@@ -57,8 +57,7 @@ class Imgur():
                     if p is not None:
                         postList.append(p)
             except Exception as e:
-                self.logger.log(logger.LogLevel.CRITICAL, 'imgur.get_posts exception: %s' % e)
-                break
+                self.logger.log(logger.LogLevel.CRITICAL, 'imgur.get_posts exception(%s): %s' % (tag, e))
         return postList
     
     def get_media_type(self, media):
