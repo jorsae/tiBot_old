@@ -52,13 +52,13 @@ class Imgur():
         for tag in self.setting.imgurTags:
             try:
                 req = requests.get('%s%s' % (self.setting.tagLink, tag), headers=self.setting.imgurHeaders)
+                for post in req.json()['data']['items']:
+                    p = self.json_to_post(post, tag)
+                    if p is not None:
+                        postList.append(p)
             except Exception as e:
                 self.logger.log(logger.LogLevel.CRITICAL, 'imgur.get_posts exception: %s' % e)
                 break
-            for post in req.json()['data']['items']:
-                p = self.json_to_post(post, tag)
-                if p is not None:
-                    postList.append(p)
         return postList
     
     def get_media_type(self, media):
